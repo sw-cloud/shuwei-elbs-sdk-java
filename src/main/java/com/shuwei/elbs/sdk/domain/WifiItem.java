@@ -26,6 +26,14 @@ public class WifiItem implements Serializable {
      * wifi采集的时间戳(ms)
      */
     private Long timestamp;
+    /**
+     * 频段（1:2.4G，2:5G）
+     */
+    private Integer band;
+    /**
+     * 信道
+     */
+    private Integer channel;
 
     public WifiItem() {
     }
@@ -77,5 +85,21 @@ public class WifiItem implements Serializable {
 
     public void setSsid(String ssid) {
         this.ssid = ssid;
+    }
+
+    public Integer getBand() {
+        return band;
+    }
+
+    public void setBand(Integer band) {
+        this.band = band;
+    }
+
+    public Integer getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Integer channel) {
+        this.channel = channel;
     }
 }
