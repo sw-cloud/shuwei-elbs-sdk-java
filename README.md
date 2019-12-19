@@ -1,4 +1,26 @@
-# 使用示例
+# 数位ELBS SDK
+
+### 引用方式
+pom.xml中增加以下配置：
+
+``` xml
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.sw-cloud</groupId>
+            <artifactId>shuwei-elbs-sdk-java</artifactId>
+            <version>1.1</version>
+        </dependency>
+    </dependencies>
+```
+
+### 使用示例
 以下是调用数位ELBS定位接口的三个主要步骤：
 1. 创建ELBSProfile实例并进行初始化
 2. 创建一个ELBSRequest对象并设置值，ELBSRequest中标识了NecessaryField注解的字段为必传字段
@@ -6,7 +28,7 @@
 
 简单代码示例如下：
 
-```
+``` java
 ELBSProfile elbsProfile = new ELBSProfile(
         "<your appId>",
         "<your appkey>",
