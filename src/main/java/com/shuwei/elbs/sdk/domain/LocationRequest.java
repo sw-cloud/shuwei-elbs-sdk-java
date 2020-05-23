@@ -26,6 +26,10 @@ public class LocationRequest extends ELBSRequest {
      * 签名
      */
     private String sign;
+    /**
+     * 基站信息列表
+     */
+    private List<BaseStation> baseStationList;
 
     public String authorization(){
         return String.format("t=%d;a=%s", getTimestamp(), this.appId);
@@ -82,7 +86,7 @@ public class LocationRequest extends ELBSRequest {
         locationRequest.setAppId(appId);
         locationRequest.setExt(requestData.getExt());
         locationRequest.setAppInfo(requestData.getAppInfo());
-        locationRequest.setBaseStations(requestData.getBaseStations());
+        locationRequest.setBaseStationList(requestData.getBaseStations());
         locationRequest.setBluetoothInfo(requestData.getBluetoothInfo());
         locationRequest.setDeviceInfo(requestData.getDeviceInfo());
         locationRequest.setGpsInfo(requestData.getGpsInfo());
@@ -102,6 +106,13 @@ public class LocationRequest extends ELBSRequest {
         return locationRequest;
     }
 
+    public List<BaseStation> getBaseStationList() {
+        return baseStationList;
+    }
+
+    public void setBaseStationList(List<BaseStation> baseStationList) {
+        this.baseStationList = baseStationList;
+    }
 
     public String getAppId() {
         return appId;
