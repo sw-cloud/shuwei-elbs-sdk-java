@@ -2,9 +2,9 @@ package com.shuwei.elbs.sdk;
 
 import com.shuwei.elbs.sdk.constant.CommonConstant;
 import com.shuwei.elbs.sdk.constant.RetCode;
+import com.shuwei.elbs.sdk.domain.ELBSRequest;
 import com.shuwei.elbs.sdk.domain.ELBSResponse;
 import com.shuwei.elbs.sdk.domain.LocationRequest;
-import com.shuwei.elbs.sdk.domain.ELBSRequest;
 import com.shuwei.elbs.sdk.utils.AESUtil;
 import com.shuwei.elbs.sdk.utils.HttpUtil;
 import com.shuwei.elbs.sdk.utils.ShuweiUtil;
@@ -21,7 +21,9 @@ public final class ELBSClient implements IELBSClient{
 
     private static Logger logger = LoggerFactory.getLogger(ELBSClient.class);
 
-    // 环境配置，包含appId、appKey、url信息
+    /**
+     * 环境配置，包含appId、appKey、url信息
+     */
     private ELBSProfile elbsProfile;
 
     public ELBSClient(ELBSProfile elbsProfile) {
@@ -93,9 +95,9 @@ public final class ELBSClient implements IELBSClient{
                 response.setCode(code);
             }
         } catch (Exception e) {
-            response = ELBSResponse.newInstance(RetCode.SERVER_ERROR);
+            response = ELBSResponse.newInstance(RetCode.CLIENT_ERROR);
             response.setCode(code);
-            logger.debug("doResponse|{}", RetCode.SERVER_ERROR.getRetCode(), e);
+            logger.debug("doResponse|{}", RetCode.CLIENT_ERROR.getRetCode(), e);
         }
 
         logger.trace("elbsResponse|{}", ShuweiUtil.toJsonStr(response));

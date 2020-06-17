@@ -2,7 +2,6 @@ package com.shuwei.elbs.sdk.domain;
 
 import com.shuwei.elbs.sdk.constant.CommonConstant;
 import com.shuwei.elbs.sdk.constant.RetCode;
-import okhttp3.Request;
 
 import java.util.Map;
 

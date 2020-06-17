@@ -6,6 +6,9 @@ package com.shuwei.elbs.sdk.constant;
 public final class RetCode {
     /** 成功 */
     public static final RetCode SUCCESS= new RetCode(0, "OK");
+
+    /** 客户端错误 */
+    public static final RetCode CLIENT_ERROR= new RetCode(100000, "Client error");
     /** 服务器错误 */
     public static final RetCode SERVER_ERROR= new RetCode(100001, "System error");
     /** 环境错误 */

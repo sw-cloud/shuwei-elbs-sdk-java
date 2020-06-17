@@ -1,11 +1,16 @@
 package com.shuwei.elbs.sdk.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.MessageDigest;
 
 /**
  * Sha1加密工具类
  */
 public final class Sha1Util {
+
+    private final static Logger logger = LoggerFactory.getLogger(Sha1Util.class);
 
     private Sha1Util(){}
 
@@ -26,7 +31,7 @@ public final class Sha1Util {
             messageDigest.update(str.getBytes());
             return getFormattedText(messageDigest.digest());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("shuwei Sha1Util encrypt error:", e);
             return "";
         }
     }

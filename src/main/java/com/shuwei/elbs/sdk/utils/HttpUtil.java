@@ -2,7 +2,6 @@ package com.shuwei.elbs.sdk.utils;
 
 import okhttp3.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**
