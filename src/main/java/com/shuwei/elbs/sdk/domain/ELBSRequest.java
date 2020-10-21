@@ -63,7 +63,7 @@ public class ELBSRequest implements Serializable{
     /**
      * 基站信息
      */
-    private List<BaseStation> baseStations;
+    private List<BaseStation> baseStationList;
     /**
      * 设备信息
      */
@@ -102,7 +102,7 @@ public class ELBSRequest implements Serializable{
                 ShuweiUtil.isEmpty(oid) ||
                 ShuweiUtil.isEmpty(oidType) ||
                 ShuweiUtil.isEmpty(networkMode) ||
-                ShuweiUtil.isEmpty(signals);
+                (ShuweiUtil.isEmpty(signals) && ShuweiUtil.isEmpty(baseStationList));
     }
 
     public boolean formatCheck(){
@@ -149,12 +149,12 @@ public class ELBSRequest implements Serializable{
         this.macType = macType;
     }
 
-    public List<BaseStation> getBaseStations() {
-        return baseStations;
+    public List<BaseStation> getBaseStationList() {
+        return baseStationList;
     }
 
-    public void setBaseStations(List<BaseStation> baseStations) {
-        this.baseStations = baseStations;
+    public void setBaseStationList(List<BaseStation> baseStationList) {
+        this.baseStationList = baseStationList;
     }
 
     public Long getTimestamp() {
@@ -283,7 +283,7 @@ public class ELBSRequest implements Serializable{
                 ", ext='" + ext + '\'' +
                 ", passthrough='" + passthrough + '\'' +
                 ", signals=" + signals +
-                ", baseStations=" + baseStations +
+                ", baseStationList=" + baseStationList +
                 ", deviceInfo=" + deviceInfo +
                 ", appInfo=" + appInfo +
                 ", bluetoothInfo=" + bluetoothInfo +

@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author: will
- * @Description:
- * @Date: Created in 2019/6/18 10:47
+ * 定位请求数据
  */
 public class LocationRequest extends ELBSRequest {
     /**
@@ -26,10 +24,6 @@ public class LocationRequest extends ELBSRequest {
      * 签名
      */
     private String sign;
-    /**
-     * 基站信息列表
-     */
-    private List<BaseStation> baseStationList;
 
     public String authorization(){
         return String.format("t=%d;a=%s", getTimestamp(), this.appId);
@@ -38,7 +32,6 @@ public class LocationRequest extends ELBSRequest {
     /**
      * 获取签名
      * @param appKey
-     * @return
      */
     private void handleSign(String appKey){
         this.sign = ShuweiUtil.getSign(signParams(), appKey);
@@ -86,7 +79,7 @@ public class LocationRequest extends ELBSRequest {
         locationRequest.setAppId(appId);
         locationRequest.setExt(requestData.getExt());
         locationRequest.setAppInfo(requestData.getAppInfo());
-        locationRequest.setBaseStationList(requestData.getBaseStations());
+        locationRequest.setBaseStationList(requestData.getBaseStationList());
         locationRequest.setBluetoothInfo(requestData.getBluetoothInfo());
         locationRequest.setDeviceInfo(requestData.getDeviceInfo());
         locationRequest.setGpsInfo(requestData.getGpsInfo());
@@ -104,14 +97,6 @@ public class LocationRequest extends ELBSRequest {
         locationRequest.handleSignals(requestData);
         locationRequest.handleSign(appKey);
         return locationRequest;
-    }
-
-    public List<BaseStation> getBaseStationList() {
-        return baseStationList;
-    }
-
-    public void setBaseStationList(List<BaseStation> baseStationList) {
-        this.baseStationList = baseStationList;
     }
 
     public String getAppId() {
