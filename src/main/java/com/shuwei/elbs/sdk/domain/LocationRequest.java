@@ -84,6 +84,7 @@ public class LocationRequest extends ELBSRequest {
         locationRequest.setDeviceInfo(requestData.getDeviceInfo());
         locationRequest.setGpsInfo(requestData.getGpsInfo());
         locationRequest.setLightInfo(requestData.getLightInfo());
+        locationRequest.setCoordinateInfo(requestData.getCoordinateInfo());
         locationRequest.setMac(requestData.getMac());
         locationRequest.setMacType(requestData.getMacType());
         locationRequest.setMagneticInfo(requestData.getMagneticInfo());
