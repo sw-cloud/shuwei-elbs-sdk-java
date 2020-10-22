@@ -15,7 +15,7 @@ pom.xml中增加以下配置：
         <dependency>
             <groupId>com.github.sw-cloud</groupId>
             <artifactId>shuwei-elbs-sdk-java</artifactId>
-            <version>v1.4.0</version>
+            <version>v1.5.0</version>
         </dependency>
     </dependencies>
 ```
