@@ -79,19 +79,14 @@ public final class ELBSClient implements IELBSClient{
         try {
             String encryptedBody = AESUtil.encrypt(requestBody, sKey, ivP);
             logger.trace("encryptedRequest|{}", encryptedBody);
-            Response httpResponse = HttpUtil.httpPostJson(this.elbsProfile.getUrl(), encryptedBody, authorization);
-            code = httpResponse.code();
-            if(httpResponse.isSuccessful() && httpResponse.body() != null){
-                String encryptedResponse = httpResponse.body().source().readString(StandardCharsets.UTF_8);
+            String httpResponse = HttpUtil.httpPostJson(this.elbsProfile.getUrl(), encryptedBody, authorization);
+            code = 200;
+            if(!ShuweiUtil.isEmpty(httpResponse)){
+                String encryptedResponse = httpResponse;
                 logger.trace("encryptedResponse|{}", encryptedResponse);
-                if(encryptedResponse != null && !"".equals(encryptedResponse)){
-                    response = ShuweiUtil.toJsonObj(AESUtil.decrypt(encryptedResponse, sKey, ivP), ELBSResponse.class);
-                } else {
-                    response = ELBSResponse.newInstance(RetCode.SERVER_ERROR);
-                    response.setCode(code);
-                }
+                response = ShuweiUtil.toJsonObj(AESUtil.decrypt(encryptedResponse, sKey, ivP), ELBSResponse.class);
             }else{
-                response = new ELBSResponse();
+                response = ELBSResponse.newInstance(RetCode.SERVER_ERROR);
                 response.setCode(code);
             }
         } catch (Exception e) {
