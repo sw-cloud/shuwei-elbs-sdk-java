@@ -1,6 +1,7 @@
 package com.shuwei.elbs.sdk.utils;
 
 import com.shuwei.elbs.sdk.constant.CommonConstant;
+import com.shuwei.elbs.sdk.domain.HttpConfig;
 import com.shuwei.elbs.sdk.domain.HttpResponse;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
@@ -24,7 +25,7 @@ public final class HttpUtil {
     private HttpUtil(){}
 
     private static final String AUTHORIZATION_KEY = "Authorization";
-
+    private static final Object syncObj = new Object();
     /**
      * 连接管理对象
      */
@@ -34,36 +35,65 @@ public final class HttpUtil {
      */
     private static RequestConfig requestConfig;
 
-    static {
-        cm = new PoolingHttpClientConnectionManager();
-        cm.setMaxTotal(200);
-        cm.setDefaultMaxPerRoute(20);
-
-        requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout(5000)
-                .setConnectTimeout(10000)
-                .setSocketTimeout(3000)
-                .build();
+    public static void init() {
+        init(null);
     }
 
-    public static HttpResponse httpPostJson(String url, String body, String authorization) throws Exception {
+    public static void init(HttpConfig httpConfig) {
+        if (httpConfig == null) {
+            httpConfig = HttpConfig.defaultInstance();
+        }
+        if (cm == null) {
+           synchronized (syncObj) {
+               if (cm == null) {
+                   cm = new PoolingHttpClientConnectionManager();
+                   cm.setMaxTotal(httpConfig.getPoolMaxTotal());
+                   cm.setDefaultMaxPerRoute(httpConfig.getPoolDefaultMaxPerRoute());
+               }
+           }
+        }
+
+        if (requestConfig == null) {
+            synchronized (syncObj) {
+                if (requestConfig == null) {
+                    requestConfig = RequestConfig.custom()
+                            .setConnectionRequestTimeout(httpConfig.getConnectionRequestTimeout())
+                            .setConnectTimeout(httpConfig.getConnectionTimeout())
+                            .setSocketTimeout(httpConfig.getSocketTimeout())
+                            .build();
+                }
+            }
+        }
+    }
+
+    /**
+     * 发送http请求
+     * @param url
+     * @param body
+     * @param authorization
+     * @return
+     */
+    public static HttpResponse httpPostJson(String url, String body, String authorization) {
         HttpPost httpPost = new HttpPost(url);
+        if (requestConfig == null) {
+            init();
+        }
         httpPost.setConfig(requestConfig);
         httpPost.addHeader(AUTHORIZATION_KEY, authorization);
         httpPost.addHeader("Connection", "keep-alive");
         ContentType contentType = ContentType.create("application/json", Consts.UTF_8);
         StringEntity entity = new StringEntity(body, contentType);
         httpPost.setEntity(entity);
-        return getResult(httpPost);
+        return getResponse(httpPost);
     }
 
     /**
-     * 处理Http请求
+     * 获取Http响应
      *
      * @param request
      * @return
      */
-    private static HttpResponse getResult(HttpRequestBase request) {
+    private static HttpResponse getResponse(HttpRequestBase request) {
         CloseableHttpClient httpClient = getHttpClient();
         CloseableHttpResponse response = null;
         int statusCode = CommonConstant.DEFAULT_HTTP_ERROR_CODE;
@@ -76,7 +106,6 @@ public final class HttpUtil {
                 return new HttpResponse(responseBody, statusCode);
             }
         } catch (IOException e) {
-            e.printStackTrace();
             return new HttpResponse(null, statusCode);
         }
         return new HttpResponse(null, statusCode);
@@ -87,6 +116,9 @@ public final class HttpUtil {
      * @return
      */
     private static CloseableHttpClient getHttpClient() {
+        if (cm == null) {
+            init();
+        }
         return HttpClients.custom().setConnectionManager(cm).build();
     }
 

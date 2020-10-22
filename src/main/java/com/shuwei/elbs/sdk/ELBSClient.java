@@ -2,10 +2,7 @@ package com.shuwei.elbs.sdk;
 
 import com.shuwei.elbs.sdk.constant.CommonConstant;
 import com.shuwei.elbs.sdk.constant.RetCode;
-import com.shuwei.elbs.sdk.domain.ELBSRequest;
-import com.shuwei.elbs.sdk.domain.ELBSResponse;
-import com.shuwei.elbs.sdk.domain.HttpResponse;
-import com.shuwei.elbs.sdk.domain.LocationRequest;
+import com.shuwei.elbs.sdk.domain.*;
 import com.shuwei.elbs.sdk.utils.AESUtil;
 import com.shuwei.elbs.sdk.utils.HttpUtil;
 import com.shuwei.elbs.sdk.utils.ShuweiUtil;
@@ -28,6 +25,8 @@ public final class ELBSClient implements IELBSClient{
         this.elbsProfile = elbsProfile;
     }
 
+
+
     /**
      * ELBS定位入口
      * @param elbsRequest ELBS请求信息
@@ -35,6 +34,11 @@ public final class ELBSClient implements IELBSClient{
      */
     @Override
     public ELBSResponse location(ELBSRequest elbsRequest) {
+        return location(elbsRequest, HttpConfig.defaultInstance());
+    }
+
+    @Override
+    public ELBSResponse location(ELBSRequest elbsRequest, HttpConfig httpConfig) {
         if(elbsRequest == null || this.elbsProfile == null){
             return ELBSResponse.newInstance(RetCode.REQUEST_DATA_IS_NULL);
         }
@@ -58,6 +62,7 @@ public final class ELBSClient implements IELBSClient{
         String authorization = locationRequest.authorization();
         logger.trace("authorization|{}", authorization);
 
+        HttpUtil.init(httpConfig);
         return responseFromHttp(requestBody, authorization);
     }
 
