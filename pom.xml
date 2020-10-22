@@ -47,11 +47,6 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.6</version>
         </dependency>
-        <dependency>
-            <groupId>com.shuwei</groupId>
-            <artifactId>j-elbs-common-utils</artifactId>
-            <version>3.30.2</version>
-        </dependency>
     </dependencies>
 
     <build>
