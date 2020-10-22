@@ -4,15 +4,13 @@ import com.shuwei.elbs.sdk.constant.CommonConstant;
 import com.shuwei.elbs.sdk.constant.RetCode;
 import com.shuwei.elbs.sdk.domain.ELBSRequest;
 import com.shuwei.elbs.sdk.domain.ELBSResponse;
+import com.shuwei.elbs.sdk.domain.HttpResponse;
 import com.shuwei.elbs.sdk.domain.LocationRequest;
 import com.shuwei.elbs.sdk.utils.AESUtil;
 import com.shuwei.elbs.sdk.utils.HttpUtil;
 import com.shuwei.elbs.sdk.utils.ShuweiUtil;
-import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * 定位入口
@@ -75,23 +73,22 @@ public final class ELBSClient implements IELBSClient{
         String ivP = appKeyTmp.substring(CommonConstant.LENGTH_OF_ENCRYPT_KEY);
 
         ELBSResponse response;
-        int code = CommonConstant.DEFAULT_HTTP_RESPONSE_CODE;
         try {
             String encryptedBody = AESUtil.encrypt(requestBody, sKey, ivP);
             logger.trace("encryptedRequest|{}", encryptedBody);
-            String httpResponse = HttpUtil.httpPostJson(this.elbsProfile.getUrl(), encryptedBody, authorization);
-            code = 200;
-            if(!ShuweiUtil.isEmpty(httpResponse)){
-                String encryptedResponse = httpResponse;
-                logger.trace("encryptedResponse|{}", encryptedResponse);
-                response = ShuweiUtil.toJsonObj(AESUtil.decrypt(encryptedResponse, sKey, ivP), ELBSResponse.class);
+            HttpResponse httpResponse = HttpUtil.httpPostJson(this.elbsProfile.getUrl(), encryptedBody, authorization);
+            int code = httpResponse.getStatusCode();
+            if(code == CommonConstant.DEFAULT_HTTP_RESPONSE_CODE){
+                logger.trace("encryptedResponse|{}", httpResponse);
+                response = ShuweiUtil.toJsonObj(AESUtil.decrypt(httpResponse.getResponse(), sKey, ivP), ELBSResponse.class);
             }else{
-                response = ELBSResponse.newInstance(RetCode.SERVER_ERROR);
+                response = ELBSResponse.newInstance(RetCode.CLIENT_ERROR);
                 response.setCode(code);
+                logger.debug("connectFail|{}", RetCode.CLIENT_ERROR.getRetCode());
             }
         } catch (Exception e) {
             response = ELBSResponse.newInstance(RetCode.CLIENT_ERROR);
-            response.setCode(code);
+            response.setCode(CommonConstant.DEFAULT_HTTP_ERROR_CODE);
             logger.debug("doResponse|{}", RetCode.CLIENT_ERROR.getRetCode(), e);
         }
 
