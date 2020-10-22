@@ -1,5 +1,7 @@
 package com.shuwei.elbs.sdk.utils;
 
+import com.shuwei.elbs.sdk.constant.CommonConstant;
+import com.shuwei.elbs.sdk.domain.HttpResponse;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -34,8 +36,8 @@ public final class HttpUtil {
 
     static {
         cm = new PoolingHttpClientConnectionManager();
-        cm.setMaxTotal(1000);
-        cm.setDefaultMaxPerRoute(100);
+        cm.setMaxTotal(200);
+        cm.setDefaultMaxPerRoute(20);
 
         requestConfig = RequestConfig.custom()
                 .setConnectionRequestTimeout(5000)
@@ -44,10 +46,11 @@ public final class HttpUtil {
                 .build();
     }
 
-    public static String httpPostJson(String url, String body, String authorization) throws Exception {
+    public static HttpResponse httpPostJson(String url, String body, String authorization) throws Exception {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setConfig(requestConfig);
         httpPost.addHeader(AUTHORIZATION_KEY, authorization);
+        httpPost.addHeader("Connection", "keep-alive");
         ContentType contentType = ContentType.create("application/json", Consts.UTF_8);
         StringEntity entity = new StringEntity(body, contentType);
         httpPost.setEntity(entity);
@@ -60,17 +63,23 @@ public final class HttpUtil {
      * @param request
      * @return
      */
-    private static String getResult(HttpRequestBase request) {
+    private static HttpResponse getResult(HttpRequestBase request) {
         CloseableHttpClient httpClient = getHttpClient();
-        try(CloseableHttpResponse response = httpClient.execute(request)) {
+        CloseableHttpResponse response = null;
+        int statusCode = CommonConstant.DEFAULT_HTTP_ERROR_CODE;
+        try {
+            response = httpClient.execute(request);
+            statusCode = response.getStatusLine().getStatusCode();
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                return EntityUtils.toString(entity);
+                String responseBody = EntityUtils.toString(entity);
+                return new HttpResponse(responseBody, statusCode);
             }
         } catch (IOException e) {
-
+            e.printStackTrace();
+            return new HttpResponse(null, statusCode);
         }
-        return "";
+        return new HttpResponse(null, statusCode);
     }
 
     /**
@@ -80,18 +89,5 @@ public final class HttpUtil {
     private static CloseableHttpClient getHttpClient() {
         return HttpClients.custom().setConnectionManager(cm).build();
     }
-
-//    public static Response httpPostJson(String url, String body, String authorization) throws Exception {
-//        OkHttpClient client = new OkHttpClient.Builder()
-//                .connectTimeout(3, TimeUnit.SECONDS)
-//                .callTimeout(1, TimeUnit.SECONDS)
-//                .build();
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .post(RequestBody.create(MediaType.get("text/plain"), body))
-//                .header(AUTHORIZATION_KEY, authorization)
-//                .build();
-//        return client.newCall(request).execute();
-//    }
 
 }

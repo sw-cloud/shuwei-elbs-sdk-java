@@ -6,8 +6,16 @@ package com.shuwei.elbs.sdk.constant;
  * @Date: Created in 2019/12/10 20:44
  */
 public final class CommonConstant {
-    // 加密key的长度
+    /**
+     * 加密key的长度
+     */
     public static final int LENGTH_OF_ENCRYPT_KEY = 16;
-    // 默认的http响应码
+    /**
+     * 默认的http响应码
+     */
     public static final int DEFAULT_HTTP_RESPONSE_CODE = 200;
+    /**
+     * 默认的http请求异常时的响应码
+     */
+    public static final int DEFAULT_HTTP_ERROR_CODE = 400;
 }
